@@ -135,9 +135,40 @@ src/
 
 ---
 
+## Git / GitHub 워크플로우
+
+**Remote:** `https://github.com/withAIcolleague/NEXINOUS_chatbot.git`  
+**브랜치:** `main`
+
+### 변경사항 push 방법
+
+> ⚠️ PowerShell에서 큰따옴표(`"`) 안에 공백이 있는 commit 메시지를 `cmd /c "git commit -m"` 으로 전달하면 파싱 오류 발생.  
+> **반드시 메시지 파일(`-F`) 방식 사용.**
+
+```bash
+# 1. 변경 파일 스테이징
+git add .
+
+# 2. commit 메시지를 파일로 작성 후 커밋
+echo "feat: 변경 내용 설명" > .git_commit_msg.txt
+git commit -F .git_commit_msg.txt
+del .git_commit_msg.txt
+
+# 3. push
+git push origin main
+```
+
+### 커밋 히스토리
+
+| 날짜 | 커밋 해시 | 내용 |
+|---|---|---|
+| 2026-02-20 | `0a0da20` | feat: add AI SDK v6 streaming and Supabase integration |
+
+---
+
 ## TODO / 미구현 기능
 
 - [ ] Sidebar ↔ ChatArea 대화 상태 연동 (현재 사이드바는 더미 데이터)
 - [ ] 새 대화 생성 버튼 기능
-- [ ] 대화 기록 저장 (localStorage 또는 DB)
+- [ ] 대화 기록 저장 (Supabase DB 연동)
 - [ ] 마크다운 렌더링 (현재 plain text)
