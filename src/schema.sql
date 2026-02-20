@@ -21,3 +21,13 @@ create table public.messages (
     )
   )
 ) TABLESPACE pg_default;
+
+-- 초대 코드 테이블 (테스트 기간 접근 제어)
+create table public.access_codes (
+  code text primary key,
+  label text,                                        -- 테스터 식별용 이름 (예: "tester1")
+  max_requests integer not null default 30,          -- 허용 최대 요청 수
+  used_requests integer not null default 0,          -- 사용된 요청 수
+  is_active boolean not null default true,           -- 비활성화로 즉시 차단 가능
+  created_at timestamp with time zone default now()
+) TABLESPACE pg_default;

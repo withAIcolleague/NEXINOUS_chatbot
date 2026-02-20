@@ -81,6 +81,7 @@ export default function ChatArea() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const MAX_INPUT = 500; // MAX_INPUT_CHARS와 동기화
   const isLoading = status === "streaming" || status === "submitted";
 
   useEffect(() => {
@@ -237,6 +238,7 @@ export default function ChatArea() {
             placeholder="메시지를 입력하세요... (Shift+Enter로 줄바꿈)"
             rows={1}
             disabled={isLoading}
+            maxLength={MAX_INPUT}
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none resize-none overflow-y-auto disabled:opacity-50"
             style={{ maxHeight: "128px" }}
           />
@@ -249,9 +251,19 @@ export default function ChatArea() {
             <Send className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-xs text-muted-foreground text-center mt-2">
-          AI는 실수를 할 수 있습니다. 중요한 정보는 반드시 확인하세요.
-        </p>
+        <div className="flex items-center justify-between mt-2">
+          <p className="text-xs text-muted-foreground">
+            AI는 실수를 할 수 있습니다. 중요한 정보는 반드시 확인하세요.
+          </p>
+          <span
+            className={`text-xs tabular-nums ${input.length >= MAX_INPUT
+                ? "text-red-400 font-medium"
+                : "text-muted-foreground"
+              }`}
+          >
+            {input.length} / {MAX_INPUT}
+          </span>
+        </div>
       </div>
     </div>
   );
