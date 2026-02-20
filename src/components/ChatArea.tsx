@@ -21,6 +21,12 @@ export default function ChatArea() {
     setConversationId(searchParams.get("id"));
   }, [searchParams]);
 
+  // onFinish 클로저에서 최신 conversationId를 참조하기 위한 ref
+  const conversationIdRef = useRef<string | null>(conversationId);
+  useEffect(() => {
+    conversationIdRef.current = conversationId;
+  }, [conversationId]);
+
   const [isCreating, setIsCreating] = useState(false);
 
   const handleNewConversation = async () => {
@@ -50,6 +56,25 @@ export default function ChatArea() {
     transport: new DefaultChatTransport({
       api: "/api/chat",
     }),
+    onFinish: async ({ message }) => {
+      const id = conversationIdRef.current;
+      if (!id) return;
+
+      // parts 배열에서 text 추출
+      const content = message.parts
+        .filter((p): p is { type: "text"; text: string } => p.type === "text")
+        .map((p) => p.text)
+        .join("");
+
+      if (!content) return;
+
+      // AI 응답 메시지를 Supabase에 저장
+      await fetch(`/api/conversations/${id}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: message.role, content }),
+      });
+    },
   });
 
   const [input, setInput] = useState("");
